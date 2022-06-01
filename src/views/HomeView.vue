@@ -25,62 +25,15 @@
             text-color="#fff"
             active-text-color="#ffd04b"
           >
-            <el-submenu index="1">
+            <el-submenu v-for="item in form" :key="item.index" :index="item.index">
               <template slot="title">
                 <i class="el-icon-location"></i>
-                <span>题库管理</span>
+                <span @click="navigator(item.name)">{{item.label}}</span>
               </template>
-              <el-menu-item-group>
-                <el-menu-item index="1-1" @click="navigator('topicbank')">题库管理</el-menu-item>
-                <el-menu-item index="1-2" @click="navigator('htmlbank')">HTML题库</el-menu-item>
-                <el-menu-item index="1-3" @click="navigator('jsbank')">JS题库</el-menu-item>
-                <el-menu-item index="1-4" @click="navigator('cssbank')">CSS题库</el-menu-item>
+              <el-menu-item-group v-for="item in item.children" :key="item.index">
+                <el-menu-item :index="item.index" @click="navigator(item.name)">{{item.label}}</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-menu-item index="2" @click="navigator('login')">
-              <i class="el-icon-menu"></i>
-              <span slot="title">匹配比赛</span>
-            </el-menu-item>
-            <el-menu-item index="3" @click="navigator('register')">
-              <i class="el-icon-document"></i>
-              <span slot="title">报名系统</span>
-            </el-menu-item>
-            <el-menu-item index="4" @click="navigator('about')">
-              <i class="el-icon-setting"></i>
-              <span slot="title">刷题系统</span>
-            </el-menu-item>
-            <el-submenu index="5">
-              <template slot="title">
-                <i class="el-icon-setting"></i>
-                <span>账号设置</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="5-1" @click="navigator('personaldata')">个人资料</el-menu-item>
-                <el-menu-item index="5-2" @click="navigator('jurisdiction')">权限管理</el-menu-item>
-                <el-menu-item index="5-3" @click="navigator('jsbank')">修改密码</el-menu-item>
-                <el-menu-item index="5-4" @click="navigator('cssbank')">账号绑定</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="6">
-              <template slot="title">
-                <i class="el-icon-setting"></i>
-                <span>任务系统</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="6-1" @click="navigator('calendar')">任务系统</el-menu-item>
-                <el-menu-item index="6-2" @click="navigator('tasklist')">任务列表</el-menu-item>
-                <el-menu-item index="6-3" @click="navigator('jsbank')">修改密码</el-menu-item>
-                <el-menu-item index="6-4" @click="navigator('cssbank')">账号绑定</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-menu-item index="7" @click="navigator('userinfo')">
-              <i class="el-icon-setting"></i>
-              <span slot="title">用户列表</span>
-            </el-menu-item>
-            <!-- <el-menu-item index="7" @click="navigator('createtask')">
-              <i class="el-icon-document"></i>
-              <span slot="title">创建任务</span>
-            </el-menu-item>-->
           </el-menu>
         </el-aside>
         <el-main>
@@ -103,6 +56,81 @@ export default {
   data() {
     return {
       phone: "",
+      form: [
+        {
+          index: "1",
+          label: "题库管理",
+          children: [
+            {
+              index: "1-1",
+              label: "题库管理",
+              name: "topicbank",
+            },
+            {
+              index: "1-2",
+              label: "JS题库",
+              name: "jsbank",
+            },
+            {
+              index: "1-3",
+              label: "HTML题库",
+              name: "htmlbank",
+            },
+            {
+              index: "1-4",
+              label: "CSS题库",
+              name: "cssbank",
+            },
+          ],
+        },
+        {
+          index: "2",
+          label: "匹配比赛",
+          name: "login",
+        },
+        {
+          index: "3",
+          label: "报名系统",
+          name: "register",
+        },
+        // {
+        //   index: "4",
+        //   label: "刷题系统",
+        // },
+        {
+          index: "4",
+          label: "账号设置",
+          children: [
+            { index: "4-1", label: "个人资料", name: "personaldata" },
+            {
+              index: "4-2",
+              label: "权限管理",
+              name: "jurisdiction",
+            },
+          ],
+        },
+        {
+          index: "5",
+          label: "任务系统",
+          children: [
+            {
+              index: "5-1",
+              label: "任务系统",
+              name: "calendar",
+            },
+            {
+              index: "5-2",
+              label: "任务列表",
+              name: "tasklist",
+            },
+          ],
+        },
+        {
+          index: "6",
+          label: "用户列表",
+          name: "userinfo",
+        },
+      ],
     };
   },
   created() {
