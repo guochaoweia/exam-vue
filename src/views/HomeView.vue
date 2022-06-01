@@ -24,11 +24,20 @@
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
+            v-for="item in form"
+            :key="item.index"
+            :index="item.index"
           >
-            <el-submenu v-for="item in form" :key="item.index" :index="item.index">
+            <el-menu-item v-if="!item.children" @click="navigator(item.name)">
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span @click="navigator(item.name)">{{item.label}}</span>
+                <i :class="item.meta.icon"></i>
+                <span>{{item.label}}</span>
+              </template>
+            </el-menu-item>
+            <el-submenu v-else>
+              <template slot="title">
+                <i :class="item.meta.icon"></i>
+                <span>{{item.label}}</span>
               </template>
               <el-menu-item-group v-for="item in item.children" :key="item.index">
                 <el-menu-item :index="item.index" @click="navigator(item.name)">{{item.label}}</el-menu-item>
@@ -82,16 +91,25 @@ export default {
               name: "cssbank",
             },
           ],
+          meta: {
+            icon: "el-icon-setting",
+          },
         },
         {
           index: "2",
           label: "匹配比赛",
           name: "login",
+          meta: {
+            icon: "el-icon-eleme",
+          },
         },
         {
           index: "3",
           label: "报名系统",
           name: "register",
+          meta: {
+            icon: "el-icon-document",
+          },
         },
         // {
         //   index: "4",
@@ -108,6 +126,9 @@ export default {
               name: "jurisdiction",
             },
           ],
+          meta: {
+            icon: "el-icon-setting",
+          },
         },
         {
           index: "5",
@@ -124,11 +145,17 @@ export default {
               name: "tasklist",
             },
           ],
+          meta: {
+            icon: "el-icon-setting",
+          },
         },
         {
           index: "6",
           label: "用户列表",
           name: "userinfo",
+          meta: {
+            icon: "el-icon-user",
+          },
         },
       ],
     };
