@@ -137,7 +137,7 @@ export default {
     async getInfo() {
       let res = await getUserInfo();
       if (res.data.status == 1) {
-        this.form = res.data.data[0];
+        this.form = res.data.data;
         delete this.form.id;
         delete this.form.createdAt;
         delete this.form.updatedAt;

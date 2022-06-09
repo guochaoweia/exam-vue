@@ -3,15 +3,15 @@
     <div class="search">
       <div class="title pl-10">任务列表</div>
       <div class="taskform mt-15">
-        <el-form size="small" ref="form" :model="tableData">
+        <el-form size="small" ref="form" :model="form">
           <div class="align-center">
             <el-form-item label="任务名称" label-width="80px">
-              <el-input v-model="tableData.taskName" placeholder="请输入任务名称"></el-input>
+              <el-input v-model="taskname" placeholder="请输入任务名称"></el-input>
             </el-form-item>
             <el-form-item label="创建时间" label-width="80px">
               <el-col :span="11">
                 <el-date-picker
-                  v-model="value1"
+                  v-model="startdate"
                   type="daterange"
                   range-separator="至"
                   start-placeholder="开始日期"
@@ -19,8 +19,8 @@
                 ></el-date-picker>
               </el-col>
             </el-form-item>
-            <el-form-item label="任务执行人" label-width="100px">
-              <el-select v-model="value" placeholder="请选择任务执行人">
+            <el-form-item v-model="value1" label="任务执行人" label-width="100px">
+              <el-select v-model="executor" placeholder="请选择任务执行人">
                 <el-option
                   v-for="(item,index) in tableData"
                   :key="index"
@@ -63,19 +63,20 @@
           width="100px"
         ></el-table-column>
         <el-table-column align="center" prop="duration" label="任务时长" width="80px"></el-table-column>
-        <el-table-column align="center" prop="createdAt" label="创建时间" width="200px">
+        <el-table-column align="center" prop="createdAt" label="创建时间" width="150px">
           <template slot-scope="scope">
             <span>{{new Date(scope.row.createdAt).toLocaleString()}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="isReceived" label>
+        <el-table-column align="center" prop="isReceived" width="80px" label>
           <template slot-scope="scope">
             <el-tag type="success" v-if="scope.row.isReceived==1">已领取</el-tag>
             <el-tag type="danger" v-else>未领取</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="200px" label>
+        <el-table-column align="center" width="300px" label>
           <template slot-scope="scope">
+            <el-link type="primary" class="pr-5" @click="edittask(scope.row)">编辑任务</el-link>
             <el-link type="primary" class="pr-5" @click="details(scope.row)">查看详情</el-link>
             <el-link type="primary" class="pr-5" @click="publishtask(scope.row)">发布任务</el-link>
             <el-link type="primary" v-if="scope.row.isReceived==0" @click="receive(scope.row)">领取任务</el-link>
@@ -102,6 +103,10 @@
         <el-button type="primary" @click="receivetask">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="编辑任务" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <el-taskform ref="tasklist" @submit="submitForm" :data="row" :taskId="taskId"></el-taskform>
+    </el-dialog>
+
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -120,10 +125,12 @@ import {
   getUserlist,
   getPublishtask,
   getTaskdetailApi,
+  getTaskUpdata,
 } from "@/api/api";
 export default {
   data() {
     return {
+      dialogVisible: false,
       form: {},
       task: {},
       tableData: [],
@@ -140,7 +147,10 @@ export default {
       receivedData: [],
       publish: [],
       taskId: "",
-      // taskName: "",
+      taskname: "",
+      startdate: "",
+      executor: "",
+      row: [],
     };
   },
   async created() {
@@ -178,17 +188,24 @@ export default {
     },
     //任务列表
     async taskList() {
-      let res = await getTasklist();
+      let res = await getTasklist({
+        taskName: this.taskname,
+        pagination: this.pagination,
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+      });
       if (res.data.status == 1) {
         this.tableData = res.data.data.rows;
         this.count = res.data.data.count;
-        console.log(res);
+        console.log("数据");
+        console.log(this.tableData);
       }
     },
-    //发布任务
+    //发布任务 弹层
     async publishtask(item) {
       this.taskId = item.id;
       let res = await getTaskdetailApi({
+        // userIds: this.selectpersonal,
         taskId: this.taskId,
       });
       if (res.data.status == 1) {
@@ -204,9 +221,10 @@ export default {
       }
       this.dialogpublish = true;
     },
+    //发布任务接口
     async confirm() {
       let res = await getPublishtask({
-        userId: this.value,
+        userIds: this.value,
         taskId: this.taskId,
       });
       if (res.data.status == 1) {
@@ -235,7 +253,7 @@ export default {
     },
     async receivetask() {
       let res = await getPublishtask({
-        userId: [857],
+        userIds: [871],
         taskId: this.task.id,
       });
       if (res.data.status == 1) {
@@ -247,13 +265,35 @@ export default {
         });
       }
     },
-    async search() {
-      let res = await getTasklist({
-        taskName: this.tableData.taskName,
-      });
+    //模糊查询
+    search() {
+      this.taskList();
+    },
+    //编辑任务
+    async edittask(el) {
+      this.taskId = el.id;
+      console.log(el);
+      this.dialogVisible = true;
+      this.row = el;
+    },
+    async submitForm(val, userIds) {
+      this.row = val;
+      let { id, name, desc, duration, level } = this.row;
+      let res = await getTaskUpdata({ id, name, desc, duration, level });
       if (res.data.status == 1) {
+        this.$message({
+          type: "success",
+          message: "编辑成功",
+        });
+        getPublishtask({
+          userIds: userIds,
+          taskId: this.row.id,
+        }).then((res) => {
+          console.log(res);
+        });
         this.taskList();
-        console.log(res);
+        this.dialogVisible = false;
+        this.$refs.tasklist.initForm();
       }
     },
   },
@@ -273,6 +313,9 @@ export default {
       font-size: 20px;
       font-weight: bolder;
     }
+  }
+  .main {
+    overflow: scorll;
   }
 }
 ::v-deep .el-input__inner {

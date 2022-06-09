@@ -10,7 +10,7 @@
           <div>武汉市 2022-04-20 15:00 星期三 21-22℃ 晴 风力 1|2级 风向 无持续风向微风</div>
           <div class="align-center">
             <img src="../assets/1.jpg" class="iconImg mr-5" />
-            <span>{{phone}}</span>
+            <span>{{userInfo.phone}}</span>
           </div>
           <span class="iconfont icon-guanji" @click="logout">退出</span>
         </div>
@@ -18,29 +18,29 @@
       <el-container class="container">
         <el-aside class="aside" width="200px">
           <el-menu
+            :default-active="defaultActive"
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
-            v-for="item in form"
-            :key="item.index"
-            :index="item.index"
+            v-for="item in menu"
+            :key="item.name"
           >
-            <el-menu-item v-if="!item.children" @click="navigator(item.name)">
+            <el-menu-item :index="item.name" v-if="!item.children" @click="navigator(item.name)">
               <template slot="title">
                 <i :class="item.meta.icon"></i>
                 <span>{{item.label}}</span>
               </template>
             </el-menu-item>
-            <el-submenu v-else>
+            <el-submenu v-else :index="item.name">
               <template slot="title">
                 <i :class="item.meta.icon"></i>
                 <span>{{item.label}}</span>
               </template>
-              <el-menu-item-group v-for="item in item.children" :key="item.index">
-                <el-menu-item :index="item.index" @click="navigator(item.name)">{{item.label}}</el-menu-item>
+              <el-menu-item-group v-for="item in item.children" :key="item.name">
+                <el-menu-item :index="item.name" @click="navigator(item.name)">{{item.label}}</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
@@ -60,121 +60,24 @@
 //退出
 // 点击退出时,调取服务端接口/user/logout,如果退出成功,则删除sessionStorage中的token值,并返回到登录页面
 import { logoutAPi, getUserInfo } from "../api/api";
+import menu from "@/config/menu.config";
 export default {
   name: "HomeView",
   data() {
     return {
-      phone: "",
-      form: [
-        {
-          index: "1",
-          label: "题库管理",
-          children: [
-            {
-              index: "1-1",
-              label: "题库管理",
-              name: "topicbank",
-            },
-            {
-              index: "1-2",
-              label: "JS题库",
-              name: "jsbank",
-            },
-            {
-              index: "1-3",
-              label: "HTML题库",
-              name: "htmlbank",
-            },
-            {
-              index: "1-4",
-              label: "CSS题库",
-              name: "cssbank",
-            },
-          ],
-          meta: {
-            icon: "el-icon-setting",
-          },
-        },
-        {
-          index: "2",
-          label: "匹配比赛",
-          name: "login",
-          meta: {
-            icon: "el-icon-eleme",
-          },
-        },
-        {
-          index: "3",
-          label: "报名系统",
-          name: "register",
-          meta: {
-            icon: "el-icon-document",
-          },
-        },
-        // {
-        //   index: "4",
-        //   label: "刷题系统",
-        // },
-        {
-          index: "4",
-          label: "账号设置",
-          children: [
-            { index: "4-1", label: "个人资料", name: "personaldata" },
-            {
-              index: "4-2",
-              label: "权限管理",
-              name: "jurisdiction",
-            },
-          ],
-          meta: {
-            icon: "el-icon-setting",
-          },
-        },
-        {
-          index: "5",
-          label: "任务系统",
-          children: [
-            {
-              index: "5-1",
-              label: "任务系统",
-              name: "calendar",
-            },
-            {
-              index: "5-2",
-              label: "任务列表",
-              name: "tasklist",
-            },
-          ],
-          meta: {
-            icon: "el-icon-setting",
-          },
-        },
-        {
-          index: "6",
-          label: "用户列表",
-          name: "userinfo",
-          meta: {
-            icon: "el-icon-user",
-          },
-        },
-      ],
+      userInfo: {},
+      defaultActive: "",
+      menu,
     };
   },
-  created() {
-    getUserInfo()
-      .then((res) => {
-        if (res.data.status == 401) {
-          this.$router.push({
-            name: "login",
-          });
-        } else {
-          this.phone = res.data.data[0].phone;
-        }
-      })
-
-      .catch((err) => {
-        console.log(err);
-      });
+  async created() {
+    this.defaultActive = this.$route.name;
+    let res = await getUserInfo();
+    console.log(res);
+    if (res.data.status == 1) {
+      this.userInfo = res.data.data;
+      console.log(this.userInfo);
+    }
   },
   // },
   methods: {

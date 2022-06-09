@@ -1,15 +1,35 @@
 import axios from "axios";
 
+// 添加请求拦截器
+axios.interceptors.request.use(function (config) {
+    // 在发送请求之前做些什么
+
+    config.headers.authorization = sessionStorage.getItem("token")
+    return config;
+}, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+});
+
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    if (response.data.status == 401) {
+        window.location.href = '/'
+    }
+    return response;
+}, function (error) {
+    // 对响应错误做点什么
+    return Promise.reject(error);
+});
 const baseURL = '/api'
-export const getConfig = function () {
-    return {
-        baseURL: '/api',
-        headers: {
-            contentType: 'application/json',
-            authorization: sessionStorage.getItem("token"),
-        }
+const postConfig = {
+    baseURL,
+    headers: {
+        contentType: 'application/json',
     }
 }
+
 
 /**
  * @description 获取用户信息
@@ -17,7 +37,7 @@ export const getConfig = function () {
  * @returns 
  */
 export function getUserInfo(payLoad = {}) {
-    return axios.post('/user/info', payLoad, getConfig())
+    return axios.post('/user/info', payLoad, postConfig)
 }
 /**
  * @description 修改用户信息
@@ -25,7 +45,7 @@ export function getUserInfo(payLoad = {}) {
  * @returns 
  */
 export function getUpdata(payLoad = {}) {
-    return axios.post('/user/update', payLoad, getConfig())
+    return axios.post('/user/update', payLoad, postConfig)
 }
 /**
  * @description  注册接口
@@ -33,7 +53,7 @@ export function getUpdata(payLoad = {}) {
  * @returns 
  */
 export function registerApi(payLoad = {}) {
-    return axios.post('/user/register', payLoad, getConfig())
+    return axios.post('/user/register', payLoad, postConfig)
 }
 /**
  * @description 登录接口
@@ -44,7 +64,7 @@ export function registerApi(payLoad = {}) {
  * @param payLoad.captcha   获取验证码
  */
 export function loginApi(payLoad = {}) {
-    return axios.post('/user/login', payLoad, getConfig())
+    return axios.post('/user/login', payLoad, postConfig)
 }
 /**
  * @description 退出登录接口
@@ -52,7 +72,7 @@ export function loginApi(payLoad = {}) {
  * @returns 
  */
 export function logoutAPi(payLoad = {}) {
-    return axios.post('/user/logout', payLoad, getConfig())
+    return axios.post('/user/logout', payLoad, postConfig)
 }
 
 /**
@@ -71,7 +91,7 @@ export function getCaptchaApi() {
  * @param {*} payLoad.pageNum
  */
 export function topicbankApi(payLoad = {}) {
-    return axios.post('/question/list', payLoad, getConfig())
+    return axios.post('/question/list', payLoad, postConfig)
 }
 /**
  * @description 创建题
@@ -86,7 +106,7 @@ export function topicbankApi(payLoad = {}) {
  * @param   payLoad.level   // 难度系数  1：简单  2：普通 3：困难
  */
 export function createQuestionsApi(payLoad = {}) {
-    return axios.post('/question/create', payLoad, getConfig())
+    return axios.post('/question/create', payLoad, postConfig)
 }
 /**
  * @description 修改题
@@ -102,14 +122,14 @@ export function createQuestionsApi(payLoad = {}) {
  * @param   payLoad.level   // 难度系数  1：简单  2：普通 3：困难
  */
 export function modifyQuestionsApi(payLoad = {}) {
-    return axios.post('/question/update', payLoad, getConfig())
+    return axios.post('/question/update', payLoad, postConfig)
 }
 /**
  * @description 删除题库列表
 
  */
 export function deleteQuestionsApi(payLoad = {}) {
-    return axios.post('/question/delete', payLoad, getConfig())
+    return axios.post('/question/delete', payLoad, postConfig)
 }
 /**
  * @description 增加记事簿
@@ -118,7 +138,7 @@ export function deleteQuestionsApi(payLoad = {}) {
  * @param  payLoad.progress:<number>, //进度  默认是0 最大填 100  指的是当前工作任务的进度；
  */
 export function addDiaryApi(payLoad = {}) {
-    return axios.post('/diary/create', payLoad, getConfig())
+    return axios.post('/diary/create', payLoad, postConfig)
 }
 /**
  * @description 创建任务
@@ -129,7 +149,20 @@ export function addDiaryApi(payLoad = {}) {
       
  */
 export function getTaskCreate(payLoad = {}) {
-    return axios.post('/task/create', payLoad, getConfig())
+    return axios.post('/task/create', payLoad, postConfig)
+}
+/**
+ * @description 编辑任务
+ * @param
+ * @param  payLoad.id:<number>, //任务id
+ * @param  payLoad.name:<string>, //任务名称
+ * @param  payLoad.desc:<string>, //任务描述
+ * @param  payLoad.duration<number>  //任务时长
+ * @param  payLoad.level<number>  //任务等级
+      
+ */
+export function getTaskUpdata(payLoad = {}) {
+    return axios.post('/task/update', payLoad, postConfig)
 }
 /**
  * @description 发布任务
@@ -139,7 +172,7 @@ export function getTaskCreate(payLoad = {}) {
       
  */
 export function getPublishtask(payLoad = {}) {
-    return axios.post('/task/release', payLoad, getConfig())
+    return axios.post('/task/release', payLoad, postConfig)
 }
 /**
  * @description 查询任务列表
@@ -150,7 +183,7 @@ export function getPublishtask(payLoad = {}) {
 
  */
 export function getTasklist(payLoad = {}) {
-    return axios.post('/task/list', payLoad, getConfig())
+    return axios.post('/task/list', payLoad, postConfig)
 }
 /**
  * @description 查询用户信息列表
@@ -161,7 +194,7 @@ export function getTasklist(payLoad = {}) {
 
  */
 export function getUserlist(payLoad = {}) {
-    return axios.post('/user/list', payLoad, getConfig())
+    return axios.post('/user/list', payLoad, postConfig)
 }
 /**
  * @description 创建角色
@@ -170,7 +203,7 @@ export function getUserlist(payLoad = {}) {
  * @param  payLoad.groupId :<number>,  //分组id
  */
 export function getRoleCreateApi(payLoad = {}) {
-    return axios.post('/role/create', payLoad, getConfig())
+    return axios.post('/role/create', payLoad, postConfig)
 }
 /**
  * @description 创建分组
@@ -178,7 +211,7 @@ export function getRoleCreateApi(payLoad = {}) {
  * @param  payLoad.groupName:<string>, //分组名字
  */
 export function getRoleGroupCreateApi(payLoad = {}) {
-    return axios.post('/roleGroup/create', payLoad, getConfig())
+    return axios.post('/roleGroup/create', payLoad, postConfig)
 }
 /**
  * @description 角色列表
@@ -189,7 +222,7 @@ export function getRoleGroupCreateApi(payLoad = {}) {
 
  */
 export function getRoleListApi(payLoad = {}) {
-    return axios.post('/role/list', payLoad, getConfig())
+    return axios.post('/role/list', payLoad, postConfig)
 }
 /**
  * @description 角色分组列表
@@ -200,7 +233,7 @@ export function getRoleListApi(payLoad = {}) {
 
  */
 export function getRoleGroupListApi(payLoad = {}) {
-    return axios.post('/roleGroup/list', payLoad, getConfig())
+    return axios.post('/roleGroup/list', payLoad, postConfig)
 }
 /**
  * @description 查询任务详情
@@ -209,6 +242,6 @@ export function getRoleGroupListApi(payLoad = {}) {
 
  */
 export function getTaskdetailApi(payLoad = {}) {
-    return axios.post('/task/detail', payLoad, getConfig())
+    return axios.post('/task/detail', payLoad, postConfig)
 }
 

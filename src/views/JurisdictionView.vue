@@ -26,7 +26,7 @@
         <div class="tags">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="角色成员" name="first">
-              <div class="roleMember">
+              <!-- <div class="roleMember">
                 <div class="flex-between">
                   <div class="align-center">
                     <h1 class="mr-5">小千金</h1>
@@ -91,10 +91,10 @@
                     <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
                   </div>
                 </div>
-              </div>
+              </div>-->
             </el-tab-pane>
             <el-tab-pane label="功能权限" name="second">
-              <juris-table></juris-table>
+              <el-juris></el-juris>
             </el-tab-pane>
             <el-tab-pane label="数据范围" name="third"></el-tab-pane>
           </el-tabs>
@@ -105,11 +105,9 @@
 </template>
 
 <script>
-import jurisTable from "@/components/JurisTable.vue";
 import { getRoleListApi, getRoleGroupListApi } from "@/api/api";
 // import Group from "@/assets/menulist/group";
 export default {
-  components: { jurisTable },
   data() {
     return {
       roleGroup: [],

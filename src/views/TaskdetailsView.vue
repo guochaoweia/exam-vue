@@ -61,6 +61,7 @@
               </el-timeline-item>
             </el-timeline>
           </div>
+          <test-page></test-page>
         </div>
       </div>
     </div>
@@ -101,8 +102,12 @@
 <script>
 import { getTaskdetailApi } from "@/api/api";
 import fromTime from "@/mixins/fromDate";
+import TestPage from "@/components/TestPage.vue";
 export default {
   mixins: [fromTime],
+  components: {
+    TestPage,
+  },
   data() {
     return {
       taskId: "",

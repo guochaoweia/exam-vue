@@ -46,8 +46,8 @@ import { encrypt } from "../assets/utils";
 export default {
   data() {
     return {
-      username: "xiaoming",
-      password: "999999",
+      username: "guochaowei",
+      password: "000915",
       captcha: "",
       captchaSrc: "/api/captcha",
     };

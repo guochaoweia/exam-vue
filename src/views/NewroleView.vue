@@ -29,7 +29,7 @@
           </div>
         </div>
       </div>
-      <juris-table></juris-table>
+      <el-juris></el-juris>
       <div class="pt-5">
         <el-button type="primary" @click="createrole">确认新增</el-button>
       </div>
@@ -79,14 +79,12 @@
 </template>
 
 <script>
-import jurisTable from "@/components/JurisTable.vue";
 import {
   getRoleListApi,
   getRoleCreateApi,
   getRoleGroupListApi,
 } from "@/api/api";
 export default {
-  components: { jurisTable },
   data() {
     return {
       roleName: "",

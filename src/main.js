@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import './styles.scss'
 import './common.scss'
 import VueSocketIO from 'vue-socket.io'
+import "@/components/main.js"
 
 Vue.use(ElementUI)
 

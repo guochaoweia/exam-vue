@@ -2,20 +2,22 @@ body {
     margin: 0;
 }
 
-.flex-between {
+@mixin flex-conent($conent) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: $conent ;
+}
+
+.flex-between {
+    @include flex-conent(space-between)
+}
+
+.flex-center {
+    @include flex-conent(center)
 }
 
 .align-center {
     display: flex;
-    align-items: center;
-}
-
-.flex-center {
-    display: flex;
-    justify-content: center;
     align-items: center;
 }
 
