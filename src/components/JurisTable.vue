@@ -4,20 +4,20 @@
       <div class="right-text">设置角色对应的功能操作、应用管理、后台管理权限</div>
     </div>
     <div class="table mt-10">
-      <div v-for="(item,index) in cities" :label="item.label" :key="item.name">
+      <div v-for="item in menu" :label="item.label" :key="item.name">
         <el-checkbox
-          :indeterminate="isIndeterminate"
-          v-model="checkAll"
-          @change="handleCheckAllChange(index,item.children)"
+          :indeterminate="item.isIndeterminate"
+          v-model="item.checkAll"
+          @change="handleCheckAllChange($event,item)"
         >{{item.label}}</el-checkbox>
         <div style="margin: 15px 0;"></div>
         <template v-if="item.children">
-          <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+          <el-checkbox-group v-model="item.arr" @change="handleCheckedCitiesChange($event,item)">
             <el-checkbox
               v-for="children in item.children"
-              :key="children.name"
-              :label="children.label"
-            >{{children.label}}</el-checkbox>
+              :key="children"
+              :label="children"
+            >{{children}}</el-checkbox>
           </el-checkbox-group>
         </template>
       </div>
@@ -26,29 +26,41 @@
 </template>
 
 <script>
-import menu from "@/config/menu.config.js";
+import menus from "@/config/menu.config.js";
 export default {
   data() {
     return {
-      checkAll: false,
       checkedCities: [],
-      cities: menu,
+      menu: [],
       isIndeterminate: false,
     };
   },
-  created() {},
+  created() {
+    this.menu = menus.map((data) => {
+      let item = JSON.parse(JSON.stringify(data));
+      item.checkAll = false;
+      item.isIndeterminate = false;
+      item.children = item.children.map((el) => {
+        return el.label;
+      });
+      item.arr = [];
+      return item;
+    });
+  },
   methods: {
-    handleCheckAllChange(val, children) {
-      console.log(val);
-      console.log(children);
-      this.checkedCities = val ? menu : [];
-      this.isIndeterminate = false;
+    handleCheckAllChange(val, item) {
+      console.log(item);
+      item.isIndeterminate = false;
+      item.arr = val ? item.children : [];
     },
-    handleCheckedCitiesChange(value) {
+    handleCheckedCitiesChange(value, el) {
+      console.log(value);
+      console.log(el);
       let checkedCount = value.length;
-      this.checkAll = checkedCount === this.cities.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.cities.length;
+      el.checkAll = checkedCount === el.children.length;
+      el.isIndeterminate =
+        checkedCount > 0 && checkedCount < el.children.length;
+      console.log(el.isIndeterminate);
     },
   },
 };

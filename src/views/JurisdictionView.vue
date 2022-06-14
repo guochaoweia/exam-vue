@@ -1,244 +1,223 @@
 <template>
-  <div class="jurisdiction">
-    <div class="title align-center">
-      <img class="icon mr-5" src="@/assets/userIcon.png" alt />
-      <div>角色管理</div>
-    </div>
-    <div class="main">
-      <div class="asside">
-        <div class="align-center mt-15">
-          <div class="align-center mr-30">
-            <img class="icon mr-5" src="@/assets/adduser.png" alt />
-            <div class="header-text" @click="newrole">新增角色</div>
-          </div>
-          <div class="align-center">
-            <img class="icon mr-5" src="@/assets/adduser.png" alt />
-            <div class="header-text" @click="creategroup">新建分组</div>
-          </div>
-        </div>
-        <el-tree accordion :data="roleGroup" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+  <div class="juris">
+    <div>
+      <div class="flex-between">
+        <el-title>权限配置</el-title>
+        <el-button type="primary" @click="append">添加权限</el-button>
       </div>
-      <div class="container">
-        <div class="align-center">
-          <div class="mr-5">所有者</div>
-          <div class="right-text">系统默认角色，默认具有企业所有功能权限和全部数据可见范围</div>
-        </div>
-        <div class="tags">
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="角色成员" name="first">
-              <!-- <div class="roleMember">
-                <div class="flex-between">
-                  <div class="align-center">
-                    <h1 class="mr-5">小千金</h1>
-                    <img class="mr-5" src="@/assets/role.png" alt />
-                    <span>1</span>
-                  </div>
-                  <div class="align-center member">
-                    <div class="align-center mr-15">
-                      <img class="mr-5" src="@/assets/former.png" alt />
-                      <div>已离职成员</div>
-                    </div>
-                    <div class="align-center">
-                      <img class="mr-5" src="@/assets/invite.png" alt />
-                      <div>邀请新成员加入本组织</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div class="align-center">
-                    <el-select v-model="value" placeholder="请选择">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      ></el-option>
-                    </el-select>
-                    <el-button class="iconbtn">
-                      <img src="@/assets/list.png" alt />
-                    </el-button>
-                  </div>
-                  <div>
-                    <el-button icon="el-icon-plus" type="primary">添加成员</el-button>
-                    <el-button>批量导入/导出</el-button>
-                    <el-button>变更部门</el-button>
-                    <el-button type="danger" plain>操作离职</el-button>
-                  </div>
-                </div>
-                <div class="roletable">
-                  <el-table
-                    ref="multipleTable"
-                    :data="tableData"
-                    tooltip-effect="dark"
-                    style="width: 100%"
-                    @selection-change="handleSelectionChange"
-                  >
-                    <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column label="姓名" width="120">
-                      <template slot-scope="scope">{{ scope.row.date }}</template>
-                    </el-table-column>
-                    <el-table-column prop="name" label="帐号状态" width="120"></el-table-column>
-                    <el-table-column prop="address" label="手机" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="address" label="部门" show-overflow-tooltip></el-table-column>
-                  </el-table>
-                </div>
-                <div class="flex-between">
-                  <div class="align-center">
-                    <el-switch v-model="value" active-color="#13ce66" inactive-color="#aaa"></el-switch>
-                    <div>仅展示部门的直属成员</div>
-                  </div>
-                  <div>
-                    <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
-                  </div>
-                </div>
-              </div>-->
-            </el-tab-pane>
-            <el-tab-pane label="功能权限" name="second">
-              <el-juris></el-juris>
-            </el-tab-pane>
-            <el-tab-pane label="数据范围" name="third"></el-tab-pane>
-          </el-tabs>
-        </div>
+      <div class="main">
+        <el-tree
+          :data="data"
+          show-checkbox
+          node-key="id"
+          default-expand-all
+          :expand-on-click-node="false"
+        >
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ data.title }}</span>
+            <span>
+              <el-button type="text" size="mini" @click="append(data)">增加</el-button>
+              <el-button
+                type="text"
+                size="mini"
+                v-if="!data.children.length"
+                @click="()=>remove(node, data)"
+              >删除</el-button>
+              <el-button type="text" size="mini" @click="() => modify(node, data)">修改</el-button>
+            </span>
+          </span>
+        </el-tree>
       </div>
     </div>
+    <el-dialog title="新增权限" :visible.sync="dialogVisible">
+      <el-form :model="form">
+        <el-form-item label="名称" :label-width="formLabelWidth">
+          <el-input v-model="form.title" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="权限类型" :label-width="formLabelWidth">
+          <el-select v-model="form.type" placeholder="请选择">
+            <el-option v-for="item in option" :key="item.id" :label="item.label" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所在目录" v-if="dialogFormVisible" :label-width="formLabelWidth">
+          <el-select filterable v-model="form.pid" placeholder="请选择">
+            <el-option v-for="item in options" :key="item.id" :label="item.title" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirm">创建</el-button>
+        <el-button type="primary" @click="modifyJuris">修改</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRoleListApi, getRoleGroupListApi } from "@/api/api";
-// import Group from "@/assets/menulist/group";
+import {
+  getPermissionListApi,
+  getPermissionCreateApi,
+  getPermissionDeleteApi,
+  getPermissionUpdateApi,
+} from "@/api/api";
 export default {
   data() {
     return {
-      roleGroup: [],
-      rolelist: [],
-      defaultProps: {
-        children: "children",
-        label: "name",
+      data: [],
+      id: "",
+      dialogFormVisible: false,
+      dialogVisible: false,
+      form: {
+        title: "",
+        type: 1,
+        pid: null,
       },
-      activeName: "first",
-      isIndeterminate: true,
-      pagination: false,
-      pageSize: "",
-      pageNum: "",
-      options: [
+      formLabelWidth: "120px",
+      options: [],
+      option: [
         {
-          label: "全部",
+          id: 1,
+          label: "左侧栏",
+        },
+        {
+          id: 2,
+          label: "页面",
+        },
+        {
+          id: 3,
+          label: "功能",
         },
       ],
-      value: true,
     };
   },
-  async created() {
-    let res = await getRoleListApi({
-      pagination: false,
-    });
-    if (res.data.status == 1) {
-      console.log(res);
-      this.rolelist = res.data.data.rows;
-    }
-    this.getMenuList();
+  created() {
+    this.getPermissionList();
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event);
+    async getPermissionList() {
+      let res = await getPermissionListApi({ pagination: false });
+      if (res.data.status == 1) {
+        console.log(res);
+        this.options = res.data.data.rows;
+        let jurisMenu = res.data.data.rows;
+        // jurisMenu.forEach((el) => {
+        //   let parent = jurisMenu.find((item) => item.id == el.pid);
+        //   if (!el.pid) return;
+        //   parent.children = parent.children || [];
+        //   parent.children.push(el);
+        // });
+        jurisMenu.forEach((el) => {
+          el.children = jurisMenu.filter((item) => item.pid == el.id);
+        });
+        this.data = jurisMenu.filter((el) => !el.pid);
+      }
     },
-    handleNodeClick(data) {
+    //增加
+    append(data) {
+      this.form = {};
+      this.dialogVisible = true;
+      this.form.pid = data.id;
       console.log(data);
     },
-    //新建角色
-    newrole() {
-      this.$router.push({
-        name: "newrole",
-      });
-    },
-    //新建分组
-    creategroup() {
-      this.$router.push({
-        name: "rolegroup",
-      });
-    },
-    //目录列表
-    async getMenuList() {
-      let [roleGroup, rolelist] = await Promise.all([
-        getRoleGroupListApi({
-          pagination: false,
-        }),
-        getRoleListApi({
-          pagination: false,
-        }),
-      ]);
-      this.roleGroup = roleGroup.data.data.rows;
-      this.rolelist = rolelist.data.data.rows;
-      this.roleGroup.forEach((item) => {
-        item.children = this.rolelist.filter((el) => el.groupId == item.id);
-        this.rolelist.forEach((item) => {
-          item.name = item.roleName;
+    async confirm() {
+      let res = await getPermissionCreateApi(this.form);
+      if (res.data.status == 1) {
+        this.$message({
+          type: "success",
+          message: "创建成功",
         });
-        item.name = item.groupName;
+        this.getPermissionList();
+        console.log(res);
+      }
+      this.dialogVisible = false;
+    },
+    //删除
+    getSelectedIds(data) {
+      let res = [data.id];
+      data.children.forEach((item) => {
+        if (item.children.length) {
+          let ids = this.getSelectedIds(item);
+          if (ids.length) res.push(...ids);
+        }
+        res.push(item.id);
       });
+      return res;
+    },
+    remove(node, data) {
+      //   data.forEach((el) => {
+      //     el.children = data.filter((d) => d.pid == data.id);
+      //     console.log(el.children);
+      //   });
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          console.log(node);
+          let ids = this.getSelectedIds(data);
+          let res = await getPermissionDeleteApi({ id: ids });
+          if (res.data.status == 1) {
+            this.getPermissionList();
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+            });
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    modify(node, data) {
+      //修改弹层
+      console.log(node);
+      console.log(data);
+      this.dialogVisible = true;
+      this.dialogFormVisible = true;
+      this.form.title = data.title;
+      this.form.type = data.type;
+      this.form.pid = data.pid;
+      this.id = data.id;
+    },
+    async modifyJuris() {
+      let res = await getPermissionUpdateApi({
+        id: this.id,
+        title: this.form.title,
+        type: this.form.type,
+        pid: this.form.pid,
+      });
+      if (res.data.status == 1) {
+        this.$message({
+          type: "success",
+          message: "修改成功",
+        });
+        this.getPermissionList();
+      }
+      this.dialogVisible = false;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.jurisdiction {
-  font-family: "Helvetica Neue";
-  margin: 0 20px;
+.juris {
+  margin: 15px;
   display: grid;
-  grid-template-rows: 40px auto;
-  .title {
-    border-bottom: 1px solid #ebeff1;
-    color: #727f90;
-  }
+  grid-template-columns: 1fr 1fr;
   .main {
-    display: grid;
-    grid-template-columns: 250px auto;
-    .asside {
-      margin-left: 20px;
-      border-right: 1px solid #ebeff1;
-      .header-text {
-        color: #4c8edd;
-        font-size: 14px;
-      }
-    }
-    .container {
-      margin-left: 30px;
-      display: grid;
-      grid-template-rows: 40px auto;
-      .right-text {
-        color: #aaa;
-        font-size: 14px;
-      }
-      .tags {
-        .roleMember {
-          display: grid;
-          grid-template-rows: 40px 60px auto 40px;
-          .member {
-            color: #5488ff;
-          }
-          .roletable {
-            .el-table {
-              ::-webkit-scrollbar {
-                height: 0;
-                width: 0;
-              }
-            }
-          }
-        }
-      }
+    .custom-tree-node {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      padding-right: 8px;
     }
   }
-}
-
-::v-deep .el-tree-node__content {
-  padding-top: 15px;
-}
-::v-deep .el-tabs--top .el-tabs__item.is-top:nth-child(2) {
-  padding: 0 20px;
-}
-::v-deep .iconbtn {
-  padding: 6px 8px;
 }
 </style>

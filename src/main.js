@@ -7,6 +7,7 @@ import './styles.scss'
 import './common.scss'
 import VueSocketIO from 'vue-socket.io'
 import "@/components/main.js"
+import Cache from "@/assets/utils/cache";
 
 Vue.use(ElementUI)
 
@@ -16,7 +17,7 @@ Vue.use(new VueSocketIO({
   connection: 'http://192.168.0.120:7001',    //这个地址是服务端地址
 }))
 Vue.config.productionTip = false
-
+Vue.prototype.$bus = new Cache()
 new Vue({
   router,
   store,

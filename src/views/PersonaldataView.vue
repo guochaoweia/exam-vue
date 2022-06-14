@@ -144,7 +144,17 @@ export default {
       }
     },
     async updata() {
-      let res = await getUpdata(this.form);
+      const { avatarName, name, sex, provinceNo, cityNo, areaNo, desc } =
+        this.form;
+      let res = await getUpdata({
+        avatarName,
+        name,
+        sex,
+        provinceNo,
+        cityNo,
+        areaNo,
+        desc,
+      });
       console.log(res);
       if (res.data.status == 1) {
         this.$message({

@@ -63,14 +63,19 @@ export default
                     path: "/personaldata",
                 },
                 {
-                    label: "权限管理",
-                    name: "jurisdiction",
-                    path: "/jurisdiction",
+                    label: "角色管理",
+                    name: "rolemanagement",
+                    path: "/rolemanagement",
                 },
                 {
                     label: "用户列表",
                     name: "userinfo",
                     path: "/userinfo",
+                },
+                {
+                    label: "权限配置",
+                    name: "jurisdiction",
+                    path: "/jurisdiction",
                 },
             ],
             meta: {
@@ -82,7 +87,7 @@ export default
             name: "tasksystem",
             children: [
                 {
-                    label: "任务系统",
+                    label: "我的任务",
                     name: "calendar",
                     path: "/calendar",
                 },

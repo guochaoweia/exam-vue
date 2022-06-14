@@ -62,9 +62,9 @@ const routes = [
         component: () => import('../views/TasklistView.vue'),
       },
       {
-        path: '/jurisdiction',
-        name: 'jurisdiction',
-        component: () => import('../views/JurisdictionView.vue'),
+        path: '/rolemanagement',
+        name: 'rolemanagement',
+        component: () => import('../views/RolemanagementView.vue'),
       },
       {
         path: '/newrole',
@@ -85,6 +85,11 @@ const routes = [
         path: '/rolegroup',
         name: 'rolegroup',
         component: () => import('../views/RoleGroupView.vue'),
+      },
+      {
+        path: '/jurisdiction',
+        name: 'jurisdiction',
+        component: () => import('../views/JurisdictionView.vue'),
       },
     ]
   },

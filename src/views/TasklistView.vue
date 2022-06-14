@@ -154,6 +154,7 @@ export default {
     };
   },
   async created() {
+    console.log(this.$bus.getItem("userInfo"));
     this.taskList();
     let res = await getUserlist({
       pagination: this.pagination,
@@ -197,20 +198,16 @@ export default {
       if (res.data.status == 1) {
         this.tableData = res.data.data.rows;
         this.count = res.data.data.count;
-        console.log("数据");
-        console.log(this.tableData);
       }
     },
     //发布任务 弹层
     async publishtask(item) {
       this.taskId = item.id;
       let res = await getTaskdetailApi({
-        // userIds: this.selectpersonal,
         taskId: this.taskId,
       });
       if (res.data.status == 1) {
         this.receivedData = res.data.data.receivedData;
-        console.log(this.receivedData);
         this.value = [];
         this.publish = [];
         this.options.forEach((el) => {

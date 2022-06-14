@@ -73,11 +73,12 @@ export default {
   async created() {
     this.defaultActive = this.$route.name;
     let res = await getUserInfo();
-    console.log(res);
+    // console.log(res);
     if (res.data.status == 1) {
       this.userInfo = res.data.data;
-      console.log(this.userInfo);
+      // console.log(this.userInfo);
     }
+    this.$bus.setItem("userInfo", this.userInfo);
   },
   // },
   methods: {

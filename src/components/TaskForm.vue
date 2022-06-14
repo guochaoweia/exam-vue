@@ -65,18 +65,11 @@ export default {
     },
   },
   created() {
-    if (this.taskId) {
-      this.form.name = this.data.taskName;
-      this.form.duration = this.data.duration;
-      this.form.desc = this.data.desc;
-      this.form.level = this.data.level == 1 ? true : false;
-      this.getUserListByTask(this.taskId);
-    } else {
-      this.getUserList();
-    }
+    this.init();
   },
   methods: {
     initForm() {
+      this.init();
       if (this.taskId) {
         this.form.userIds = [];
       } else {
@@ -87,6 +80,17 @@ export default {
           userIds: [],
           duration: 1,
         };
+      }
+    },
+    init() {
+      if (this.taskId) {
+        this.form.name = this.data.taskName;
+        this.form.duration = this.data.duration;
+        this.form.desc = this.data.desc;
+        this.form.level = this.data.level == 1 ? true : false;
+        this.getUserListByTask(this.taskId);
+      } else {
+        this.getUserList();
       }
     },
     async getUserList() {

@@ -164,6 +164,8 @@ export function getTaskCreate(payLoad = {}) {
 export function getTaskUpdata(payLoad = {}) {
     return axios.post('/task/update', payLoad, postConfig)
 }
+
+
 /**
  * @description 发布任务
  * @param
@@ -174,6 +176,8 @@ export function getTaskUpdata(payLoad = {}) {
 export function getPublishtask(payLoad = {}) {
     return axios.post('/task/release', payLoad, postConfig)
 }
+
+
 /**
  * @description 查询任务列表
  * @param
@@ -185,6 +189,8 @@ export function getPublishtask(payLoad = {}) {
 export function getTasklist(payLoad = {}) {
     return axios.post('/task/list', payLoad, postConfig)
 }
+
+
 /**
  * @description 查询用户信息列表
  * @param
@@ -196,6 +202,8 @@ export function getTasklist(payLoad = {}) {
 export function getUserlist(payLoad = {}) {
     return axios.post('/user/list', payLoad, postConfig)
 }
+
+
 /**
  * @description 创建角色
  * @param
@@ -205,6 +213,8 @@ export function getUserlist(payLoad = {}) {
 export function getRoleCreateApi(payLoad = {}) {
     return axios.post('/role/create', payLoad, postConfig)
 }
+
+
 /**
  * @description 创建分组
  * @param
@@ -213,6 +223,8 @@ export function getRoleCreateApi(payLoad = {}) {
 export function getRoleGroupCreateApi(payLoad = {}) {
     return axios.post('/roleGroup/create', payLoad, postConfig)
 }
+
+
 /**
  * @description 角色列表
  * @param
@@ -224,6 +236,8 @@ export function getRoleGroupCreateApi(payLoad = {}) {
 export function getRoleListApi(payLoad = {}) {
     return axios.post('/role/list', payLoad, postConfig)
 }
+
+
 /**
  * @description 角色分组列表
  * @param
@@ -235,6 +249,8 @@ export function getRoleListApi(payLoad = {}) {
 export function getRoleGroupListApi(payLoad = {}) {
     return axios.post('/roleGroup/list', payLoad, postConfig)
 }
+
+
 /**
  * @description 查询任务详情
  * @param
@@ -245,3 +261,51 @@ export function getTaskdetailApi(payLoad = {}) {
     return axios.post('/task/detail', payLoad, postConfig)
 }
 
+
+/**
+ * @description 权限列表
+ * @param
+ * @param  payLoad.pagination : <boolean>,    //非必填  表示是否需要分页  如果传 false：不分页   true:分页   默认不传是分页;
+ * @param  payLoad.pageSize   : <number>,     //非必填  每页获取几条数据  如果不传 默认是获取10条；
+ * @param  payLoad.pageNum    : <number>,     //非必填  想获取第几页的数据  如果不传 默认是第1页；
+
+ */
+export function getPermissionListApi(payLoad = {}) {
+    return axios.post('/permission/list', payLoad, postConfig)
+}
+
+
+/**
+ * @description 创建权限
+ * @param
+ * @param  payLoad.title : <string>,  //标题
+ * @param  payLoad.type   : <number>,  //类型   1代表左侧栏  2代表页面  3代表功能
+ * @param  payLoad.pid    : <number>, //pid如果为空就是最大的一级  如果等于某项的id就是它的子级
+
+ */
+export function getPermissionCreateApi(payLoad = {}) {
+    return axios.post('/permission/create', payLoad, postConfig)
+}
+
+
+/**
+ * @description 删除权限
+ * @param
+ * @param  payLoad.id   <arr>,   // 必填项 权限的id  如果有子级 就把子级跟父级的id都传过来 是一个数组
+
+ */
+export function getPermissionDeleteApi(payLoad = {}) {
+    return axios.post('/permission/delete', payLoad, postConfig)
+}
+
+/**
+ * @description 修改权限
+ * @param
+ * @param  payLoad.title : <string>,  //标题
+ * @param  payLoad.type   : <number>,  //类型   1代表左侧栏  2代表页面  3代表功能
+ * @param  payLoad.pid    : <number>, //pid如果为空就是最大的一级  如果等于某项的id就是它的子级
+
+ */
+export function getPermissionUpdateApi(payLoad = {}) {
+    return axios.post('/permission/update', payLoad, postConfig)
+}
