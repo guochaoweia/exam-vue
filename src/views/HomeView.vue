@@ -9,7 +9,7 @@
         <div class="info align-center">
           <div>武汉市 2022-04-20 15:00 星期三 21-22℃ 晴 风力 1|2级 风向 无持续风向微风</div>
           <div class="align-center">
-            <img src="../assets/1.jpg" class="iconImg mr-5" />
+            <img :src="this.$store.state.userinfo.avatarImg" class="iconImg mr-5" />
             <span>{{userInfo.phone}}</span>
           </div>
           <span class="iconfont icon-guanji" @click="logout">退出</span>
@@ -25,22 +25,29 @@
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
+            unique-opened
             v-for="item in menu"
             :key="item.name"
           >
-            <el-menu-item :index="item.name" v-if="!item.children" @click="navigator(item.name)">
+            <!-- <el-menu-item :index="item.name" v-if="!item.children" @click="navigator(item.name)">
               <template slot="title">
                 <i :class="item.meta.icon"></i>
                 <span>{{item.label}}</span>
               </template>
-            </el-menu-item>
-            <el-submenu v-else :index="item.name">
+            </el-menu-item>-->
+            <el-submenu :index="item.name">
               <template slot="title">
                 <i :class="item.meta.icon"></i>
                 <span>{{item.label}}</span>
               </template>
               <el-menu-item-group v-for="item in item.children" :key="item.name">
-                <el-menu-item :index="item.name" @click="navigator(item.name)">{{item.label}}</el-menu-item>
+                <div v-for="title in titleList" :key="title.id">
+                  <el-menu-item
+                    v-if="item.label==title.title"
+                    :index="item.name"
+                    @click="navigator(item.name)"
+                  >{{item.label}}</el-menu-item>
+                </div>
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
@@ -59,26 +66,37 @@
 //调取/user/info,获取sessionStorage中的值，把值渲染到页面上
 //退出
 // 点击退出时,调取服务端接口/user/logout,如果退出成功,则删除sessionStorage中的token值,并返回到登录页面
-import { logoutAPi, getUserInfo } from "../api/api";
+import { logoutAPi, getUserInfo, getRolepermissionListApi } from "../api/api";
 import menu from "@/config/menu.config";
 export default {
   name: "HomeView",
   data() {
     return {
       userInfo: {},
-      defaultActive: "",
       menu,
+      identify: null,
+      titleList: "",
     };
   },
+  computed: {
+    defaultActive() {
+      return this.$route.name;
+    },
+  },
   async created() {
-    this.defaultActive = this.$route.name;
     let res = await getUserInfo();
     // console.log(res);
     if (res.data.status == 1) {
       this.userInfo = res.data.data;
-      // console.log(this.userInfo);
+      this.$store.commit("userinfo", this.userInfo);
+      console.log(this.$store.state.userinfo.avatarImg);
+      this.identify = this.userInfo.identify;
     }
-    this.$bus.setItem("userInfo", this.userInfo);
+    let jurisdiction = await getRolepermissionListApi({
+      role: this.$store.state.userinfo.identify,
+    });
+    console.log(jurisdiction.data.data);
+    this.titleList = jurisdiction.data.data;
   },
   // },
   methods: {
@@ -149,5 +167,8 @@ export default {
 }
 ::v-deep .el-submenu .el-menu-item {
   min-width: 198px;
+}
+::v-deep .el-menu-item-group__title {
+  padding: 0;
 }
 </style>

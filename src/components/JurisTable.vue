@@ -4,13 +4,14 @@
       <div class="right-text">设置角色对应的功能操作、应用管理、后台管理权限</div>
     </div>
     <div class="table mt-10">
-      <div v-for="item in menu" :label="item.label" :key="item.name">
+      <div v-for="item in menu" :label="item.label" :key="item.name" class="item">
         <el-checkbox
+          class="mt-15"
           :indeterminate="item.isIndeterminate"
           v-model="item.checkAll"
           @change="handleCheckAllChange($event,item)"
         >{{item.label}}</el-checkbox>
-        <div style="margin: 15px 0;"></div>
+        <div style="margin: 10px 0;"></div>
         <template v-if="item.children">
           <el-checkbox-group v-model="item.arr" @change="handleCheckedCitiesChange($event,item)">
             <el-checkbox
@@ -35,7 +36,10 @@ export default {
       isIndeterminate: false,
     };
   },
-  created() {
+  watch: {
+    
+  },
+  async created() {
     this.menu = menus.map((data) => {
       let item = JSON.parse(JSON.stringify(data));
       item.checkAll = false;
@@ -49,18 +53,17 @@ export default {
   },
   methods: {
     handleCheckAllChange(val, item) {
-      console.log(item);
+      // console.log(item);
       item.isIndeterminate = false;
       item.arr = val ? item.children : [];
     },
     handleCheckedCitiesChange(value, el) {
-      console.log(value);
-      console.log(el);
       let checkedCount = value.length;
       el.checkAll = checkedCount === el.children.length;
       el.isIndeterminate =
         checkedCount > 0 && checkedCount < el.children.length;
       console.log(el.isIndeterminate);
+      this.$emit("checkboxVal", this.menu);
     },
   },
 };
@@ -75,6 +78,10 @@ export default {
   .table {
     background: #fafbfc;
     border: 1px solid #fafbfc;
+    .item {
+      padding: 0 15px 15px 15px;
+      border-bottom: 1px solid #eef3fc;
+    }
     .table-colums {
       display: grid;
       grid-template-columns: 100px auto;

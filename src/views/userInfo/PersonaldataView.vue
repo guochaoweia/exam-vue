@@ -91,7 +91,7 @@
 
 <script>
 import cityData from "@/citydata.json";
-import { getUserInfo, getUpdata } from "../api/api";
+import { getUserInfo, getUpdata } from "../../api/api";
 export default {
   data() {
     return {

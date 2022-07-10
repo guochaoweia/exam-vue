@@ -151,10 +151,11 @@ export default {
       startdate: "",
       executor: "",
       row: [],
+      userinfo: "",
     };
   },
   async created() {
-    console.log(this.$bus.getItem("userInfo"));
+    // console.log(this.$bus.getItem("userInfo"));
     this.taskList();
     let res = await getUserlist({
       pagination: this.pagination,
@@ -249,8 +250,10 @@ export default {
       console.log(this.task);
     },
     async receivetask() {
+      this.userinfo = this.$bus.getItem("userInfo");
+      console.log(this.userinfo);
       let res = await getPublishtask({
-        userIds: [871],
+        userIds: [this.userinfo.id],
         taskId: this.task.id,
       });
       if (res.data.status == 1) {

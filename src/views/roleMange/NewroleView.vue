@@ -29,52 +29,11 @@
           </div>
         </div>
       </div>
-      <el-juris></el-juris>
+      <el-juris @checkboxVal="checkboxVal"></el-juris>
       <div class="pt-5">
         <el-button type="primary" @click="createrole">确认新增</el-button>
       </div>
     </div>
-    <!-- <div class="main">
-      <div class="addInfo">
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <div class="align-center">
-            <el-form-item label="角色名称" prop="name">
-              <el-input v-model="ruleForm.name" placeholder="请输入新增角色名称"></el-input>
-            </el-form-item>
-            <el-form-item label="所属部门" prop="region">
-              <el-select v-model="ruleForm.region" placeholder="请选择所属部门">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </div>
-        </el-form>
-      </div>
-      <div class="choose">
-        <el-checkbox>选择所有权限</el-checkbox>
-      </div>
-      <div class="table">
-        <div class="table-head">
-          <el-checkbox>签名管理</el-checkbox>
-        </div>
-        <div class="table-main align-center">
-          <el-checkbox>KEY种子写入</el-checkbox>
-          <el-checkbox>校验KEY密码</el-checkbox>
-          <el-checkbox>修改KEY密码</el-checkbox>
-        </div>
-        <div class="table-main align-center">
-          <el-checkbox>签名币种列表</el-checkbox>
-          <el-checkbox>新增签名币种</el-checkbox>
-          <el-checkbox>编辑签名币种</el-checkbox>
-        </div>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -83,6 +42,7 @@ import {
   getRoleListApi,
   getRoleCreateApi,
   getRoleGroupListApi,
+  getRolepermissionCreateApi,
 } from "@/api/api";
 export default {
   data() {
@@ -93,6 +53,8 @@ export default {
       pagination: false,
       pageSize: "",
       pageNum: "",
+      userId: "",
+      titleData: [],
     };
   },
   async created() {
@@ -105,11 +67,22 @@ export default {
       pageNum: this.pageNum,
     });
     if (role.data.status == 1) {
-      console.log(role);
-      // this.options = res.data.data.rows;
+      console.log(role.data.data.rows);
+      role.data.data.rows.forEach((el) => {
+        console.log(el.id);
+      });
     }
   },
   methods: {
+    async checkboxVal(val) {
+      console.log(val);
+      let res = [];
+      val.forEach((element) => {
+        res = res.concat(element.arr);
+      });
+      this.titleData = res;
+      console.log(this.titleData);
+    },
     async createrole() {
       let res = await getRoleCreateApi({
         roleName: this.roleName,
@@ -121,7 +94,14 @@ export default {
           type: "success",
           message: "创建成功",
         });
-        (this.roleName = ""), (this.groupId = "");
+        this.roleName = "";
+        this.groupId = "";
+        this.userId = res.data.data[0].id;
+        let permissionCreate = await getRolepermissionCreateApi({
+          title: this.titleData,
+          rId: this.userId,
+        });
+        console.log(permissionCreate);
       }
     },
   },

@@ -16,7 +16,16 @@
             <div class="header-text" @click="creategroup">新建分组</div>
           </div>
         </div>
-        <el-tree accordion :data="roleGroup" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+        <el-tree
+          accordion
+          :data="roleGroup"
+          highlight-current
+          :props="defaultProps"
+          @node-click="handleNodeClick"
+          node-key="id"
+          :default-expanded-keys="[0, 1]"
+          :default-checked-keys="[2]"
+        ></el-tree>
       </div>
       <div class="container">
         <div class="align-center">
@@ -105,7 +114,11 @@
 </template>
 
 <script>
-import { getRoleListApi, getRoleGroupListApi } from "@/api/api";
+import {
+  getRoleListApi,
+  getRoleGroupListApi,
+  getRolepermissionListApi,
+} from "@/api/api";
 // import Group from "@/assets/menulist/group";
 export default {
   data() {
@@ -116,7 +129,7 @@ export default {
         children: "children",
         label: "name",
       },
-      activeName: "first",
+      activeName: "second",
       isIndeterminate: true,
       pagination: false,
       pageSize: "",
@@ -128,6 +141,7 @@ export default {
       ],
       value: true,
       tableData: [],
+      rolepermission: [],
     };
   },
   async created() {
@@ -139,6 +153,10 @@ export default {
       this.rolelist = res.data.data.rows;
     }
     this.getMenuList();
+    let res1 = await getRolepermissionListApi({
+      role: this.$store.state.userinfo.identify,
+    });
+    console.log(res1);
   },
   methods: {
     handleSelectionChange(val) {
@@ -165,15 +183,12 @@ export default {
     //目录列表
     async getMenuList() {
       let [roleGroup, rolelist] = await Promise.all([
-        getRoleGroupListApi({
-          pagination: false,
-        }),
-        getRoleListApi({
-          pagination: false,
-        }),
+        getRoleGroupListApi({ pagination: false }),
+        getRoleListApi({ pagination: false }),
       ]);
       this.roleGroup = roleGroup.data.data.rows;
       this.rolelist = rolelist.data.data.rows;
+      console.log(this.rolelist);
       this.roleGroup.forEach((item) => {
         item.children = this.rolelist.filter((el) => el.groupId == item.id);
         this.rolelist.forEach((item) => {
@@ -236,9 +251,6 @@ export default {
   }
 }
 
-::v-deep .el-tree-node__content {
-  padding-top: 15px;
-}
 ::v-deep .el-tabs--top .el-tabs__item.is-top:nth-child(2) {
   padding: 0 20px;
 }

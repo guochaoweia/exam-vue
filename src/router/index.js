@@ -19,27 +19,27 @@ const routes = [
       {
         path: '/topicbank',
         name: 'topicbank',
-        component: () => import('../views/TopicbankView.vue')
+        component: () => import('../views/topic/TopicbankView.vue')
       },
       {
         path: '/htmlbank',
         name: 'htmlbank',
-        component: () => import('../views/HtmlbankView.vue')
+        component: () => import('../views/topic/HtmlbankView.vue')
       },
       {
         path: '/jsbank',
         name: 'jsbank',
-        component: () => import('../views/JsbankView.vue')
+        component: () => import('../views/topic/JsbankView.vue')
       },
       {
         path: '/personaldata',
         name: 'personaldata',
-        component: () => import('../views/PersonaldataView.vue'),
+        component: () => import('../views/userInfo/PersonaldataView.vue'),
       },
       {
         path: '/calendar',
         name: 'calendar',
-        component: () => import('../views/CalendarView.vue'),
+        component: () => import('../views/task/CalendarView.vue'),
       },
       {
         path: '/about',
@@ -49,27 +49,27 @@ const routes = [
       {
         path: '/createtask',
         name: 'createtask',
-        component: () => import('../views/CreatetaskView.vue'),
+        component: () => import('../views/task/CreatetaskView.vue'),
       },
       {
         path: '/userinfo',
         name: 'userinfo',
-        component: () => import('../views/UserInfoView.vue'),
+        component: () => import('../views/userInfo/UserInfoView.vue'),
       },
       {
         path: '/tasklist',
         name: 'tasklist',
-        component: () => import('../views/TasklistView.vue'),
+        component: () => import('../views/task/TasklistView.vue'),
       },
       {
         path: '/rolemanagement',
         name: 'rolemanagement',
-        component: () => import('../views/RolemanagementView.vue'),
+        component: () => import('../views/roleMange/RolemanagementView.vue'),
       },
       {
         path: '/newrole',
         name: 'newrole',
-        component: () => import('../views/NewroleView.vue'),
+        component: () => import('../views/roleMange/NewroleView.vue'),
       },
       {
         path: '/userdetails',
@@ -79,17 +79,22 @@ const routes = [
       {
         path: '/taskdetails',
         name: 'taskdetails',
-        component: () => import('../views/TaskdetailsView.vue'),
+        component: () => import('../views/task/TaskdetailsView.vue'),
       },
       {
         path: '/rolegroup',
         name: 'rolegroup',
-        component: () => import('../views/RoleGroupView.vue'),
+        component: () => import('../views/roleMange/RoleGroupView.vue'),
       },
       {
         path: '/jurisdiction',
         name: 'jurisdiction',
-        component: () => import('../views/JurisdictionView.vue'),
+        component: () => import('../views/roleMange/JurisdictionView.vue'),
+      },
+      {
+        path: '/setavatar',
+        name: 'SetAvatar',
+        component: () => import('../views/userInfo/SetAvatar.vue'),
       },
     ]
   },

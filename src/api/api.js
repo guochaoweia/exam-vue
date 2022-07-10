@@ -275,6 +275,7 @@ export function getPermissionListApi(payLoad = {}) {
 }
 
 
+
 /**
  * @description 创建权限
  * @param
@@ -298,6 +299,7 @@ export function getPermissionDeleteApi(payLoad = {}) {
     return axios.post('/permission/delete', payLoad, postConfig)
 }
 
+
 /**
  * @description 修改权限
  * @param
@@ -308,4 +310,34 @@ export function getPermissionDeleteApi(payLoad = {}) {
  */
 export function getPermissionUpdateApi(payLoad = {}) {
     return axios.post('/permission/update', payLoad, postConfig)
+}
+
+
+/**
+ * @description 获取功能权限列表
+ * @param
+ * @param  payLoad.pagination : <boolean>,    //非必填  表示是否需要分页  如果传 false：不分页   true:分页   默认不传是分页;
+ * @param  payLoad.pageSize   : <number>,     //非必填  每页获取几条数据  如果不传 默认是获取10条；
+ * @param  payLoad.pageNum    : <number>,     //非必填  想获取第几页的数据  如果不传 默认是第1页；
+
+ */
+export function getRolepermissionListApi(payLoad = {}) {
+    return axios.post('/jurisdiction/list', payLoad, postConfig)
+}
+/**
+ * @description 创建权限
+ * @param
+ * @param  payLoad.title : [<string>], //选择的那个功能权限名称
+
+ */
+export function getRolepermissionCreateApi(payLoad = {}) {
+    return axios.post('/rolePermission/create', payLoad, postConfig)
+}
+/**
+ * @description 返回头像
+ * @param
+
+ */
+export function getAvatarListApi(payLoad = {}) {
+    return axios.post('/avatar/list', payLoad, postConfig)
 }

@@ -131,7 +131,7 @@ export default {
   },
 };
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .login {
   height: 100vh;
   background-color: #f5f8fd;
